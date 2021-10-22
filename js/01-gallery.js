@@ -7,6 +7,16 @@ const galleryContainer = document.querySelector('.gallery');
 
 galleryContainer.addEventListener('click', onSelectImage);
 
+// Підключення біблотеки basicLightbox
+
+const instance = basicLightbox.create(`<img src="" />`, {
+  onShow: () => {
+    window.addEventListener('keydown', keydownEscape);
+  },
+  onClose: () => {
+    window.removeEventListener('keydown', keydownEscape);
+  },
+});
 
 //Створення і рендер розмітки 
 
@@ -35,25 +45,22 @@ renderImages();
 
 function onSelectImage(event) {
   event.preventDefault();
-  const imageUrl = event.target.dataset.source;
-  //console.log(imageUrl)
-  const instance = basicLightbox.create(`
-    <img src="${imageUrl}" width="800" height="600">
-`)
-
-  instance.show()
-  
-  //Закриття кнопкою Escape
-
-  document.addEventListener('keydown', onSelectButtonEscape)
-    function onSelectButtonEscape (event) {
-      if (event.key === 'Escape') { 
-      document.removeEventListener('keydown', onSelectButtonEscape)
-      instance.close();
-      }
-  }
+  instance.element().querySelector('img').src = event.target.dataset.source;
+  instance.show();
    
 }
+
+ //Закриття кнопкою Escape
+
+ function keydownEscape(event) {
+  console.log(event);
+  if (event.key === 'Escape') {
+    instance.close();
+    return;
+  }
+}
+
+
 
 
 
